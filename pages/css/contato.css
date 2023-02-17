@@ -1,0 +1,214 @@
+*{
+    font-family: 'Montserrat', sans-serif;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+header{
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    flex-wrap: wrap;  
+  }
+ 
+ 
+ nav {
+    display: flex;
+    justify-content: space-around; 
+    width: 100%;
+    background-color: rgb(247, 154, 2);
+    margin-top: 5px;
+ }
+ 
+ .logo{
+    height: 200px;
+    width: 200px;
+    border-radius: 40px;
+    margin: 40px auto 40px; 
+   
+ }
+ 
+ .menu {
+   
+    font-weight: 600;
+    font-size: 35px;
+    line-height: 50px;
+    color: rgb(255, 255, 255);
+    margin: 20px 0 20px;
+    cursor: pointer;
+   
+ }
+ 
+ a:hover {
+     color :rgb(0, 0, 0);
+ }
+
+
+
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 50px;
+    background-color: rgb(247, 154, 2);
+    margin-top: 100px;
+
+}
+
+
+.form{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: blanchedalmond;
+    padding: 30px;
+}
+
+.form-header{
+    margin-bottom: 20PX;
+    display:flex;
+ }
+
+ h1{
+   color: rgb(104, 64, 64);
+   font-weight: 600;
+    font-size: 40px;
+    margin:20px 0 20px;
+ }
+
+ .input-box {
+    display: flex;
+    flex-direction: column;
+    color: rgb(104, 64, 64);
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 15px;
+   
+ }
+
+ .input-radio{
+   display: flex;
+   flex-direction: column;
+ }
+
+ .input-radio-texto{
+   color: rgb(104, 64, 64);
+   font-weight: 600;
+   font-size: 15px;
+   margin: 10px 0 10px; 
+ }
+
+.input-radio1{
+   color: rgb(104, 64, 64);
+   font-weight: 600;
+   font-size: 15px;
+   margin: 5px 0 5px;
+}
+
+
+
+ .button {
+   display: flex;
+   justify-content: center;
+   margin: 40px 0 10px;
+}
+
+
+ .button button {
+    font-weight: 600;
+    font-size: 14px;
+    height:26px;
+    width: 80px;
+    border: 2px solid rgb(169, 95, 10);
+    border-radius: 5px;   
+    background-color: rgb(247, 154, 2);
+    cursor: pointer;
+
+ }
+
+
+
+.rodape {
+    background: rgb(247, 154, 2);
+    color:rgb(0, 0, 0);
+    font-weight: 600;
+    font-size: 35px;
+    line-height: 50px;
+    text-align: center;
+    margin-top: 80px;
+    margin-bottom: 10px;
+ }
+
+ @media screen and (max-width:596px) {
+
+
+
+   nav{ 
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    background-color: transparent;
+    margin-top: 5px; 
+    } 
+ 
+    .logo{ 
+       height: 70px;
+       width: 70px;
+       border-radius: 20px;
+       margin-top: 5px; 
+    }
+ 
+    .menu { 
+       font-weight: 600;
+       font-size: 13px;
+       line-height: 30px;
+       color: rgb(207, 131, 24);
+       cursor: pointer;
+       padding-left: 20px;
+       margin-right: 5px; 
+    }
+    
+   .container{
+      width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 50px;
+    background-color: rgb(247, 154, 2);
+    margin-top: 5px;
+
+   }
+
+   .form{
+      width: 90%;
+      height: 70%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: blanchedalmond;
+      padding: 30px;
+  }
+
+  h1{
+   text-align: center;
+   color: rgb(104, 64, 64);
+   font-weight: 600;
+    font-size: 25px;
+    margin:20px auto 20px;
+
+   }
+
+   .rodape {
+      background: rgb(247, 154, 2);
+      color:rgb(0, 0, 0);
+      font-weight: 600;
+      font-size: 15px;
+      line-height: 30px;
+      text-align: center;
+      margin-top: 30px;
+      margin-bottom: 10px;
+   
+   
+   }
+}
