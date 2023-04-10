@@ -19,10 +19,14 @@ const alertInfo = document.getElementById("alert-info")
 const fundo = document.getElementById("fundo")
 const alertCarrinho = document.getElementById("alert-informacao")
 const alertSucesso = document.getElementById("alert-sucesso")
+const semNum = document.getElementById("sem-numero")
+const semCep = document.getElementById("sem-cep")
+let inputNum = document.getElementById("numeroCasa")
+let inputCep = document.getElementById("cep")
+btnConfirmarEndereco.disabled = false
 
 //função toogle
 function toogleClasse(toogle) {
-
     if (toogle.classList.contains("hide")) {
         toogle.classList.remove("hide")
     } else {
@@ -38,20 +42,288 @@ function fechar(fechar) {
     fundo.classList.add("hide")
 }
 
+//Quando "Lanches" for clicado, abre/fecha
+menuLanches.addEventListener("click", () => {
+    const cardapioLanches = document.getElementById("cardapio-lanches")
+    toogleClasse(cardapioLanches)
+})
+
+//Quando "Bebidas" for clicado, abre/fecha
+menuBebidas.addEventListener("click", () => {
+    const cardapioBebidas = document.getElementById("cardapio-bebidas")
+    toogleClasse(cardapioBebidas)
+
+})
+
+//função para adicionar itens ao box de informações finais
+function pedidoCarrinho() {
+    let produtos = document.getElementsByClassName("add-produto");
+    let quantidades = document.getElementsByClassName("add-quantidade");
+    let precos = document.getElementsByClassName("add-preco-total");
+    let adicionarPedido = document.createElement("div")
+    adicionarPedido.setAttribute("id", "div-pedido")
+
+
+    for (let i = 0; i < produtos.length; i++) {
+        let adicionarInfo = document.createElement("div")
+        adicionarInfo.className = "div-pedido"
+
+        let adicionarProduto = document.createElement("p")
+        adicionarProduto.innerHTML = "<strong>Produto:</strong> " + produtos[i].innerHTML
+        adicionarProduto.className = "padding-bottom-5"
+
+
+        let adicionarQuantidade = document.createElement("p")
+        adicionarQuantidade.innerHTML = "<strong>Quantidade:</strong> " + quantidades[i].innerHTML
+        adicionarQuantidade.className = "padding-bottom-5 espaco-esquerda"
+
+        let adicionarTotalUnitario = document.createElement("p")
+        adicionarTotalUnitario.innerHTML = "<strong>Total do produto:</strong> R$ " + precos[i].innerHTML
+        adicionarTotalUnitario.className = "padding-bottom-5 espaco-esquerda"
+
+        adicionarInfo.appendChild(adicionarProduto)
+        adicionarInfo.appendChild(adicionarQuantidade)
+        adicionarInfo.appendChild(adicionarTotalUnitario)
+        adicionarPedido.appendChild(adicionarInfo)
+    }
+
+    let boxInfo = document.getElementById("confirmar-informacoes-pedido")
+    boxInfo.appendChild(adicionarPedido)
+}
+
+//função para adicionar o preço total do pedido ao box de informações
+function adicionarPrecoTotal() {
+
+    let adicionarTotalPedido = document.createElement("p")
+    adicionarTotalPedido.setAttribute("id", "paragrafo-total")
+    adicionarTotalPedido.innerHTML = "<strong>Total Pedido: R$ " + localStorage.getItem("total") + "</strong>"
+    adicionarTotalPedido.className = "padding-bottom-5"
+
+    let boxInfo = document.getElementById("total-geral-pedido")
+    boxInfo.appendChild(adicionarTotalPedido)
+}
+
+//função para excluir linha e atualizar preço total
+function excluir(event) {
+    let excluir = event.target
+    let excluirLinha = excluir.parentNode.parentNode
+    let excluirPrecoTotal = excluirLinha.getElementsByClassName("add-preco-total")[0].innerHTML
+    let index = arrayTotal.indexOf(parseFloat(excluirPrecoTotal.slice(3)))
+    let exibirTotal = document.getElementById("total-pedido")
+
+    arrayTotal.splice(index, 1)
+    const totalPedido = arrayTotal.reduce((total, numeroAtual) => total + numeroAtual, 0)
+    localStorage.setItem("total", totalPedido)
+
+    exibirTotal.innerHTML = "R$ " + totalPedido
+    exibirTotal.className = "total-pedido preco"
+
+    excluirLinha.remove()
+}
+
+//Botão "alterar pedido" abre o carrinho de compras e faz alteração do pedido no box de informação conforme informado pelo usuário 
+btnAlterarPedido.addEventListener("click", () => {
+    let paragrafoTotal = document.getElementById("paragrafo-total")
+    toogleClasse(carrinho)
+    toogleClasse(confirmarInfo)
+
+    for (let i = 0; i < quantidade.length; i++) {
+
+        btnMais[i].disabled = false;
+
+        if (quantidade[i].innerHTML > 0) {
+            btnComprar[i].disabled = false;
+            btnMenos[i].disabled = false;
+        }
+    }
+
+    if (!btnConfirmarPedido1.classList.contains("hide")) {
+        btnConfirmarPedido1.classList.add("hide")
+    }
+    if (btnConfirmarPedido2.classList.contains("hide")) {
+        btnConfirmarPedido2.classList.remove("hide")
+    }
+
+    paragrafoTotal.remove()
+
+})
+
+//Botão "alterar endereço" abre o formulário de endereço e faz alteração do endereço no box de informação conforme informado pelo usuário 
+btnAlterarEndereco.addEventListener("click", () => {
+    let divEndereco = document.getElementById("div-endereco")
+
+    localStorage.removeItem("numero")
+    localStorage.removeItem("cidade")
+    localStorage.removeItem("cep")
+    localStorage.removeItem("bairro")
+    localStorage.removeItem("rua")
+    toogleClasse(enderecoPedido)
+    toogleClasse(confirmarInfo)
+    if (!carrinho.classList.contains("hide")) {
+        carrinho.classList.add("hide")
+    }
+    divEndereco.remove()
+})
+
+//Botão "confirmar endereço" ao ser clicado envia para o localStorage o endereço do usuário e adiciona pelo localStorage as informações ao box de informação
+btnConfirmarEndereco.addEventListener("click", (event) => {
+    event.preventDefault()
+    let formulario = document.getElementById("cadastro-endereco")
+
+    let rua = formulario.rua.value
+    let numero = formulario.numeroCasa.value
+    let bairro = formulario.bairro.value
+    let cep = formulario.cep.value
+    let cidade = formulario.cidade.value
+
+    if (cep == "") {
+        semCep.classList.remove("hide")
+        mostrarSpanCep
+        return
+    } else {
+        semCep.classList.add("hide")
+        mostrarSpanCep
+    }
+
+    if (numero == "") {
+        semNum.classList.remove("hide")
+        mostrarSpanNum
+        return
+    } else {
+        semNum.classList.add("hide")
+        mostrarSpanNum
+    }
+
+
+    localStorage.setItem("rua", rua)
+    localStorage.setItem("numero", numero)
+    localStorage.setItem("bairro", bairro)
+    localStorage.setItem("cep", cep)
+    localStorage.setItem("cidade", cidade)
+
+    let adicionarInfo = document.createElement("div")
+    adicionarInfo.setAttribute("id", "div-endereco")
+
+    let adicionarRuaENum = document.createElement("div")
+    adicionarRuaENum.className = "divRuaENum"
+
+    let adicionarRua = document.createElement("p")
+    adicionarRua.innerHTML = "<strong>Rua:</strong> " + localStorage.getItem("rua")
+
+    let adicionarNumero = document.createElement("span")
+    adicionarNumero.innerHTML = "<strong>Número:</strong> " + localStorage.getItem("numero")
+    adicionarNumero.className = "espaco-esquerda"
+
+    let adicionarBairro = document.createElement("p")
+    adicionarBairro.innerHTML = "<strong>Bairro:</strong> " + localStorage.getItem("bairro")
+
+    let adicionarCep = document.createElement("p")
+    adicionarCep.innerHTML = "<strong>CEP:</strong> " + localStorage.getItem("cep")
+
+    let adicionarCidade = document.createElement("p")
+    adicionarCidade.innerHTML = "<strong>Cidade:</strong> " + localStorage.getItem("cidade")
+
+    adicionarRuaENum.appendChild(adicionarRua)
+    adicionarRua.appendChild(adicionarNumero)
+    adicionarInfo.appendChild(adicionarRuaENum)
+    adicionarInfo.appendChild(adicionarBairro)
+    adicionarInfo.appendChild(adicionarCep)
+    adicionarInfo.appendChild(adicionarCidade)
+
+    let tabela = document.getElementById("confirmar-informacoes-endereco")
+    tabela.appendChild(adicionarInfo)
+
+    if (!carrinho.classList.contains("hide")) {
+        carrinho.classList.add("hide")
+    }
+
+    toogleClasse(enderecoPedido)
+    toogleClasse(confirmarInfo)
+})
+
+//Botão "confirmar" limpa as informações do localStorage, adiciona um alert para informação do usuário e recarrega a página
+btnConfirmar.addEventListener("click", () => {
+    let tempo = 11
+    localStorage.clear()
+
+    confirmarInfo.classList.add("hide")
+
+    setInterval(function () {
+        tempo--
+        if (tempo <= 0) {
+            location.reload()
+        } else {
+            document.getElementById('tempo-restante').innerHTML = tempo
+        }
+    }, 1000);
+
+    Swal.fire(
+        'Pedido concluído',
+        "Seu pedido foi concluído com sucesso!<br>A página será recarregada automaticamente em <span id='tempo-restante'>" + tempo + "</span> segundos",
+        'success'
+    )
+
+    Swal.getConfirmButton().addEventListener('click', function () {
+        location.reload()
+    })
+})
+
+//Botão "confirmar pedido" ao ser clicado esconde o carrinho e abre formulário de endereço, necessário dois botões iguais por conta da função toogle
+btnConfirmarPedido2.addEventListener("click", () => {
+    let divPedido = document.getElementById("div-pedido")
+    toogleClasse(confirmarInfo)
+    toogleClasse(carrinho)
+
+    for (let i = 0; i < quantidade.length; i++) {
+        btnComprar[i].disabled = true;
+        btnMais[i].disabled = true;
+        btnMenos[i].disabled = true;
+    }
+
+    adicionarPrecoTotal()
+    pedidoCarrinho()
+    divPedido.remove()
+})
+
+//Botão "confirmar pedido" ao ser clicado esconde o carrinho e abre formulário de endereço, necessário dois botões iguais por conta da função toogle
+btnConfirmarPedido1.addEventListener("click", () => {
+    const carrinhoPedido = document.getElementById("carrinho")
+    toogleClasse(carrinhoPedido)
+
+    for (let i = 0; i < quantidade.length; i++) {
+        btnComprar[i].disabled = true;
+        btnMais[i].disabled = true;
+        btnMenos[i].disabled = true;
+    }
+
+    if (enderecoPedido.classList.contains("hide")) {
+        enderecoPedido.classList.remove("hide")
+    }
+
+    adicionarPrecoTotal()
+    pedidoCarrinho()
+
+})
+
 //função comprar
 function comprar(id) {
     let nome = document.getElementsByTagName("h4")[id].innerText
     let precoProduto = preco(id)
     let total = precoProduto * parseInt(quantidade[id].innerHTML)
 
-    if (alertInfo.classList.contains("hide")) {
-        alertInfo.classList.remove("hide")
-        setTimeout(() => {
-            alertInfo.classList.add("hide")
-        }, 5000)
-    }
+    var toast = Toastify({
+        text: "Produto adicionado ao carrinho!\nClique aqui para abrir.",
+        duration: 3000,
+        onClick: function () {
+            toast.hideToast();
+            fundo.classList.remove("hide")
 
-    const produto = new Produto(nome, precoProduto);
+            if (carrinho.classList.contains("hide")) {
+                carrinho.classList.remove("hide")
+            }
+
+        }
+    }).showToast()
 
     let adicionarLinha = document.createElement("tr")
 
@@ -104,19 +376,6 @@ function comprar(id) {
 
 }
 
-//Quando "Lanches" for clicado, abre/fecha
-menuLanches.addEventListener("click", () => {
-    const cardapioLanches = document.getElementById("cardapio-lanches")
-    toogleClasse(cardapioLanches)
-})
-
-//Quando "Bebibdas" for clicado, abre/fecha
-menuBebidas.addEventListener("click", () => {
-    const cardapioBebidas = document.getElementById("cardapio-bebidas")
-    toogleClasse(cardapioBebidas)
-
-})
-
 //Adicionando quantidade 0 a todos os itens e desabilitando botões "comprar" e "diminuir"
 for (let i = 0; i < quantidade.length; i++) {
     quantidade[i].innerHTML = 0;
@@ -144,289 +403,76 @@ function diminuirQuantidade(id) {
     }
 }
 
-//classe "Produto"
-class Produto {
-    constructor(nome, preco) {
-        this.nome = nome;
-        this.preco = preco;
-    }
-}
-
-//Botão "confirmar pedido" ao ser clicado esconde o carrinho e abre formulário de endereço, necessário dois botões iguais por conta da função toogle
-btnConfirmarPedido1.addEventListener("click", () => {
-    const carrinhoPedido = document.getElementById("carrinho")
-    toogleClasse(carrinhoPedido)
-
-    for (let i = 0; i < quantidade.length; i++) {
-        btnComprar[i].disabled = true;
-        btnMais[i].disabled = true;
-        btnMenos[i].disabled = true;
-    }
-
-    if (enderecoPedido.classList.contains("hide")) {
-        enderecoPedido.classList.remove("hide")
-    }
-
-    adicionarPrecoTotal()
-    pedidoCarrinho()
-
-})
-
-//Botão "confirmar pedido" ao ser clicado esconde o carrinho e abre formulário de endereço, necessário dois botões iguais por conta da função toogle
-btnConfirmarPedido2.addEventListener("click", () => {
-    let divPedido = document.getElementById("div-pedido")
-    toogleClasse(confirmarInfo)
-    toogleClasse(carrinho)
-
-    for (let i = 0; i < quantidade.length; i++) {
-        btnComprar[i].disabled = true;
-        btnMais[i].disabled = true;
-        btnMenos[i].disabled = true;
-    }
-
-    adicionarPrecoTotal()
-    pedidoCarrinho()
-    divPedido.remove()
-})
-
-//função para adicionar itens ao box de informações finais
-function pedidoCarrinho() {
-    let produtos = document.getElementsByClassName("add-produto");
-    let quantidades = document.getElementsByClassName("add-quantidade");
-    let precos = document.getElementsByClassName("add-preco-total");
-    let adicionarPedido = document.createElement("div")
-    adicionarPedido.setAttribute("id", "div-pedido")
-
-
-    for (let i = 0; i < produtos.length; i++) {
-        let adicionarInfo = document.createElement("div")
-        adicionarInfo.className = "div-pedido"
-
-        let adicionarProduto = document.createElement("p")
-        adicionarProduto.innerHTML = "<strong>Produto:</strong> " + produtos[i].innerHTML
-        adicionarProduto.className = "padding-bottom-5"
-
-
-        let adicionarQuantidade = document.createElement("p")
-        adicionarQuantidade.innerHTML = "<strong>Quantidade:</strong> " + quantidades[i].innerHTML
-        adicionarQuantidade.className = "padding-bottom-5 espaco-esquerda"
-
-        let adicionarTotalUnitario = document.createElement("p")
-        adicionarTotalUnitario.innerHTML = "<strong>Total do produto:</strong> R$ " + precos[i].innerHTML
-        adicionarTotalUnitario.className = "padding-bottom-5 espaco-esquerda"
-
-        adicionarInfo.appendChild(adicionarProduto)
-        adicionarInfo.appendChild(adicionarQuantidade)
-        adicionarInfo.appendChild(adicionarTotalUnitario)
-        adicionarPedido.appendChild(adicionarInfo)
-    }
-
-    let boxInfo = document.getElementById("confirmar-informacoes-pedido")
-    boxInfo.appendChild(adicionarPedido)
-}
-
-//função para adicionar o prço total do pedido ao box de informações
-function adicionarPrecoTotal() {
-
-    let adicionarTotalPedido = document.createElement("p")
-    adicionarTotalPedido.setAttribute("id", "paragrafo-total")
-    adicionarTotalPedido.innerHTML = "<strong>Total Pedido: R$ " + localStorage.getItem("total") + "</strong>"
-    adicionarTotalPedido.className = "padding-bottom-5"
-
-    let boxInfo = document.getElementById("total-geral-pedido")
-    boxInfo.appendChild(adicionarTotalPedido)
-}
-
-//Botão "confirmar endereço" ao ser clicado envia para o localStorage o endereço do usuário e adiciona pelo localStorage as informações ao box de informação
-btnConfirmarEndereco.addEventListener("click", (event) => {
-    event.preventDefault()
-    let formulario = document.getElementById("cadastro-endereco")
-
-    let rua = formulario.rua.value
-    let numero = formulario.numeroCasa.value
-    let bairro = formulario.bairro.value
-    let cep = formulario.cep.value
-    let cidade = formulario.cidade.value
-
-    localStorage.setItem("rua", rua)
-    localStorage.setItem("numero", numero)
-    localStorage.setItem("bairro", bairro)
-    localStorage.setItem("cep", cep)
-    localStorage.setItem("cidade", cidade)
-
-    let adicionarInfo = document.createElement("div")
-    adicionarInfo.setAttribute("id", "div-endereco")
-
-    let adicionarRuaENum = document.createElement("div")
-    adicionarRuaENum.className = "divRuaENum"
-
-    let adicionarRua = document.createElement("p")
-    adicionarRua.innerHTML = "<strong>Rua:</strong> " + localStorage.getItem("rua")
-
-    let adicionarNumero = document.createElement("span")
-    adicionarNumero.innerHTML = "<strong>Número:</strong> " + localStorage.getItem("numero")
-    adicionarNumero.className = "espaco-esquerda padding-bottom-5"
-
-    let adicionarBairro = document.createElement("p")
-    adicionarBairro.innerHTML = "<strong>Bairro:</strong> " + localStorage.getItem("bairro")
-    adicionarBairro.className = "padding-bottom-5"
-
-    let adicionarCep = document.createElement("p")
-    adicionarCep.innerHTML = "<strong>CEP:</strong> " + localStorage.getItem("cep")
-    adicionarCep.className = "padding-bottom-5"
-
-    let adicionarCidade = document.createElement("p")
-    adicionarCidade.innerHTML = "<strong>Cidade:</strong> " + localStorage.getItem("cidade")
-
-    adicionarRuaENum.appendChild(adicionarRua)
-    adicionarRuaENum.appendChild(adicionarNumero)
-    adicionarInfo.appendChild(adicionarRuaENum)
-    adicionarInfo.appendChild(adicionarBairro)
-    adicionarInfo.appendChild(adicionarCep)
-    adicionarInfo.appendChild(adicionarCidade)
-
-    let tabela = document.getElementById("confirmar-informacoes-endereco")
-    tabela.appendChild(adicionarInfo)
-
-    if (!carrinho.classList.contains("hide")) {
-        carrinho.classList.add("hide")
-    }
-
-    toogleClasse(enderecoPedido)
-    toogleClasse(confirmarInfo)
-})
-
-//Botão "confirmar" limpa as informações do localStorage, adiciona um alert para informação do usuário e recarrega a página
-btnConfirmar.addEventListener("click", () => {
-    localStorage.clear()
-
-    alertSucesso.classList.remove("hide")
-    confirmarInfo.classList.add("hide")
-
-    setTimeout(() => {
-        location.reload()
-    }, 5000)
-})
-
-//Botão "alterar endereço" abre o formulário de endereço e faz alteração do endereço no box de informação conforme informado pelo usuário 
-btnAlterarEndereco.addEventListener("click", () => {
-    let divEndereco = document.getElementById("div-endereco")
-
-    localStorage.removeItem("numero")
-    localStorage.removeItem("cidade")
-    localStorage.removeItem("cep")
-    localStorage.removeItem("bairro")
-    localStorage.removeItem("rua")
-    toogleClasse(enderecoPedido)
-    toogleClasse(confirmarInfo)
-    if (!carrinho.classList.contains("hide")) {
-        carrinho.classList.add("hide")
-    }
-    divEndereco.remove()
-})
-
-//Botão "alterar pedido" abre o carrinho de compras e faz alteração do pedido no box de informação conforme informado pelo usuário 
-btnAlterarPedido.addEventListener("click", () => {
-    let paragrafoTotal = document.getElementById("paragrafo-total")
-    toogleClasse(carrinho)
-    toogleClasse(confirmarInfo)
-
-    for (let i = 0; i < quantidade.length; i++) {
-
-        btnMais[i].disabled = false;
-
-        if (quantidade[i].innerHTML > 0) {
-            btnComprar[i].disabled = false;
-            btnMenos[i].disabled = false;
-        }
-    }
-
-    if (!btnConfirmarPedido1.classList.contains("hide")) {
-        btnConfirmarPedido1.classList.add("hide")
-    }
-    if (btnConfirmarPedido2.classList.contains("hide")) {
-        btnConfirmarPedido2.classList.remove("hide")
-    }
-
-    paragrafoTotal.remove()
-
-})
-
-//função para excluir linha e atualizar preço total
-function excluir(event) {
-    let excluir = event.target
-    let excluirLinha = excluir.parentNode.parentNode
-    let excluirPrecoTotal = excluirLinha.getElementsByClassName("add-preco-total")[0].innerHTML
-    let index = arrayTotal.indexOf(parseFloat(excluirPrecoTotal.slice(3)))
-    let exibirTotal = document.getElementById("total-pedido")
-
-    arrayTotal.splice(index, 1)
-    const totalPedido = arrayTotal.reduce((total, numeroAtual) => total + numeroAtual, 0)
-    localStorage.setItem("total", totalPedido)
-
-    exibirTotal.innerHTML = "R$ " + totalPedido
-    exibirTotal.className = "total-pedido preco"
-
-    excluirLinha.remove()
-}
-
 //função para selecionar o preço do produto
 function preco(id) {
-    let preco
-    switch (id) {
-        case 0:
-            preco = 23.50
-            break
-        case 1:
-            preco = 25
-            break
-        case 2:
-            preco = 19.50
-            break
-        case 3:
-            preco = 25.50
-            break
-        case 4:
-            preco = 7.50
-            break
-        case 5:
-            preco = 7.50
-            break
-        case 6:
-            preco = 7.50
-            break
-        case 7:
-            preco = 7.50
-            break
-        case 8:
-            preco = 7.50
-            break
-        case 9:
-            preco = 6.00
-            break
-        case 10:
-            preco = 6.00
-            break
-        case 11:
-            preco = 6.00
-            break
-        case 12:
-            preco = 6.00
-            break
-        case 13:
-            preco = 6.00
-            break
+    const precos = {
+        0: 23.50,
+        1: 25,
+        2: 19.50,
+        3: 25.50,
+        4: 7.50,
+        5: 7.50,
+        6: 7.50,
+        7: 7.50,
+        8: 7.50,
+        9: 6.00,
+        10: 6.00,
+        11: 6.00,
+        12: 6.00,
+        13: 6.00,
     }
-    return preco
+    return precos[id]
 }
 
-//alert de produto adicionado ao carrinho
-alertCarrinho.addEventListener("click", () => {
-    alertInfo.classList.add("hide")
-    fundo.classList.remove("hide")
+//Função para encontrar endereço pelo cep
+inputCep.addEventListener("blur", () => {
+    let cep = document.getElementById("cep").value
+    let rua = document.getElementById("rua")
+    let bairro = document.getElementById("bairro")
+    let cidade = document.getElementById("cidade")
+ 
+    fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        .then((resp) => resp.json())
+        .then((data) => {
+            if (data.erro) {
+                throw new Error ("CEP inválido")
+                
+            }
+            rua.value = data.logradouro;
+            bairro.value = data.bairro;
+            cidade.value = data.localidade;
+            btnConfirmarEndereco.disabled = false
+        })
+        .catch((error) => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'CEP inválido',
+              })
 
-    if (carrinho.classList.contains("hide")) {
-        carrinho.classList.remove("hide")
+              btnConfirmarEndereco.disabled = true
+        })
+})
+
+//Mostrar span para campo vazio
+const mostrarSpanNum = inputNum.addEventListener("input", () => {
+    let numero = inputNum.value
+    if (numero == "") {
+        semNum.classList.remove("hide")
+        return
+    } else {
+        semNum.classList.add("hide")
     }
+})
 
+//Mostrar span para campo vazio
+const mostrarSpanCep = inputNum.addEventListener("input", () => {
+    let formulario = document.getElementById("cadastro-endereco")
+    let cep = formulario.cep.value
+    if (cep == "") {
+        semCep.classList.remove("hide")
+        return
+    } else {
+        semCep.classList.add("hide")
+    }
 })

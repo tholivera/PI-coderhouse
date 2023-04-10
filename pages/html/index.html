@@ -6,6 +6,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="./../js/index.js" defer></script>
+  <script src="./../js/endereco.js" defer></script>
+  <script src="./../js/carrinho.js" defer></script>
+  <script src="./../js/botoes.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <link rel="stylesheet" href="./../css/index.css">
   <title>Document</title>
 
@@ -15,22 +21,9 @@
 </head>
 
 <body>
-  <div id="alert-sucesso" class="alert-sucesso hide">
-    <p>Pedido enviado com sucesso!</p>
-    <p>A página será recarregada automaticamente</p>
-    <p id="fechar-sucesso" onclick="fechar('alert-sucesso')" class="fechar">x</p>
-    <div class="carregando"></div>
-  </div>
-  <div id="alert-info" class="alert-informacao hide">
-    <div id="alert-informacao">
-      <p>Produto adicionado ao carrinho!</p>
-      <p>Clique aqui para abrir.</p>
-    </div>
-    <p id="fechar-info"  onclick="fechar('alert-info')" class="fechar">x</p>
-    <div class="carregando"></div>
-  </div>
+
   <div id="fundo" class="fundo hide"></div>
-  <main >
+  <main>
     <div class="box-flutuante">
       <section id="carrinho" class="sidebar hide">
 
@@ -53,8 +46,9 @@
               <th><button id="btn-confirmar1" class="btn-confirmar">Confirmar Pedido</button></th>
               <th><button id="btn-confirmar2" class="btn-confirmar hide">Confirmar Pedido</button></th>
             </tr>
-            
-            <th><button id="btn-continuar" onclick="fechar('carrinho')" class="btn-continuar">Continuar Comprando</button></th>
+
+            <th><button id="btn-continuar" onclick="fechar('carrinho')" class="btn-continuar">Continuar
+                Comprando</button></th>
           </table>
         </div>
       </section>
@@ -64,22 +58,24 @@
         <fieldset class="endereco">
           <form id="cadastro-endereco">
             <div class="formulario">
+              <div class="formulario">
+                <label class="margin-direita" for="cep">CEP</label>
+                <input id="cep" name="cep" type="number" maxlength="8" placeholder="Digite o CEP do endereço" required>
+                <span id="sem-cep" class="sem-cep hide">Informe seu CEP</span>
+              </div>
               <label class="margin-direita" for="rua">Rua</label>
-              <input id="rua" name="rua" type="text" placeholder="Qual a rua da entrega?" required>
+              <input id="rua" name="rua" type="text" placeholder="Rua" disabled>
               <label class="margin-direita espaco-esquerda" for="numero-casa">Número</label>
-              <input id="numeroCasa" name="numero-casa" type="number" placeholder="Digite o número da casa" required>
+              <input id="numeroCasa" name="numero-casa" type="text" placeholder="Digite o número da casa" required>
+              <span id="sem-numero" class="sem-numero hide">Informe um número ou S/N</span>
             </div>
             <div class="formulario">
               <label class="margin-direita" for="bairro">Bairro</label>
-              <input id="bairro" name="bairro" type="text" placeholder="Digite seu bairro" required>
-            </div>
-            <div class="formulario">
-              <label class="margin-direita" for="cep">CEP</label>
-              <input id="cep" name="cep" type="number" placeholder="Digite o CEP do endereço" required>
+              <input id="bairro" name="bairro" type="text" placeholder="Bairro" disabled>
             </div>
             <div class="formulario">
               <label class="margin-direita" for="cidade">Cidade</label>
-              <input id="cidade" name="cidade" type="text" placeholder="Digite sua cidade" required>
+              <input id="cidade" name="cidade" type="text" placeholder="Cidade" disabled>
             </div>
             <button class="margin-direita btn-enviar-endereco" id="confirmar-endereco" type="submit">Confirmar
               Endereço</button>
@@ -93,7 +89,7 @@
           <h3>Confirmar Pedido</h3>
           <div id="confirmar-informacoes-pedido" class="confirmar-endereco-pedido"></div>
           <div id="total-geral-pedido"></div>
-          <div class="box-btn"> 
+          <div class="box-btn">
             <button id="confirmar">Confirmar</button>
             <button id="alterar-pedido">Alterar Pedido</button>
             <button id="alterar-endereco">Alterar Endereço</button>
@@ -106,68 +102,68 @@
     <section class="cardapio">
       <h1 id="menu-lanches">LANCHES</h1>
       <ul id="cardapio-lanches" class="menu hide">
-        <li   >
+        <li>
           <h4><strong>Big Burg</strong></h4>
-          <p>Um hambúrguer com 03 carnes (280g) cobertas com fatias de cheddar  e mussarela derretidos, tiras de
+          <p>Um hambúrguer com 03 carnes (280g) cobertas com fatias de cheddar e mussarela derretidos, tiras de
             bacon
-            crocantes e molho barbecue,  tudo isso combinado com um pão brioche selado na manteiga e a  exclusiva
+            crocantes e molho barbecue, tudo isso combinado com um pão brioche selado na manteiga e a exclusiva
             maionese
             especial.</p>
-            <div class="box-botao">
-              <button class="btn-menos" onclick="diminuirQuantidade(0)">-</button>
-              <span class="quantidade"></span>
-              <button class="btn-mais" onclick="adicionarQuantidade(0)">+</button>
-              <button type="button" class=" btn-comprar btn btn-warning" onclick="comprar(0)">Comprar</button>
-            </div>
+          <div class="box-botao">
+            <button class="btn-menos" onclick="diminuirQuantidade(0)">-</button>
+            <span class="quantidade"></span>
+            <button class="btn-mais" onclick="adicionarQuantidade(0)">+</button>
+            <button type="button" class=" btn-comprar btn btn-warning" onclick="comprar(0)">Comprar</button>
+          </div>
 
         </li>
 
-        <li   >
+        <li>
           <h4><strong>Max Burg</strong></h4>
-          <p>Um delicioso hambúrguer com 150g de carne, queijo mussarela derretido,  picles e salada fresca (tomate,
+          <p>Um delicioso hambúrguer com 150g de carne, queijo mussarela derretido, picles e salada fresca (tomate,
             cebola
-            roxa e alface americana), tudo isso  envolvido em um pão brioche macio lambuzado com barbecue e a 
+            roxa e alface americana), tudo isso envolvido em um pão brioche macio lambuzado com barbecue e a
             exclusiva e deliciosa
             maionese especial.</p>
 
-            <div class="box-botao">
-              <button class="btn-menos" onclick="diminuirQuantidade(1)">-</button>
-              <span class="quantidade"></span>
-              <button class="btn-mais" onclick="adicionarQuantidade(1)">+</button>
-              <button type="button" class=" btn-comprar btn btn-warning" onclick="comprar(1)">Comprar</button>
-            </div>
+          <div class="box-botao">
+            <button class="btn-menos" onclick="diminuirQuantidade(1)">-</button>
+            <span class="quantidade"></span>
+            <button class="btn-mais" onclick="adicionarQuantidade(1)">+</button>
+            <button type="button" class=" btn-comprar btn btn-warning" onclick="comprar(1)">Comprar</button>
+          </div>
 
         </li>
 
-        <li  >
+        <li>
           <h4><strong>Egg Burg</strong></h4>
-          <p> A combinação perfeita de bacon crocante, rúcula e tomate  seco acompanhados de 150g de carne e queijo
-            mussarela 
-            derretido, pão brioche selado na manteiga com barbecue e a  exclusiva maionese especial completam essa
+          <p> A combinação perfeita de bacon crocante, rúcula e tomate seco acompanhados de 150g de carne e queijo
+            mussarela
+            derretido, pão brioche selado na manteiga com barbecue e a exclusiva maionese especial completam essa
             obra de
             arte.</p>
 
-            <div class="box-botao">
-              <button class="btn-menos" onclick="diminuirQuantidade(2)">-</button>
-              <span class="quantidade"></span>
-              <button class="btn-mais" onclick="adicionarQuantidade(2)">+</button>
-              <button type="button" class=" btn-comprar btn btn-warning" onclick="comprar(2)">Comprar</button>
-            </div>
+          <div class="box-botao">
+            <button class="btn-menos" onclick="diminuirQuantidade(2)">-</button>
+            <span class="quantidade"></span>
+            <button class="btn-mais" onclick="adicionarQuantidade(2)">+</button>
+            <button type="button" class=" btn-comprar btn btn-warning" onclick="comprar(2)">Comprar</button>
+          </div>
 
         </li>
 
-        <li   >
+        <li>
           <h4><strong>Do Cheff Burg</strong></h4>
           <p> A irresistível cebola caramelizada acompanhada de um hambúrguer de feijão fradinho e queijo cheddar
             derretido,
-            pão brioche selado na  manteiga, molho barbecue e o nossa maionese especial.</p>
+            pão brioche selado na manteiga, molho barbecue e o nossa maionese especial.</p>
 
-            <div class="box-botao">
-              <button class="btn-menos" onclick="diminuirQuantidade(3)">-</button>
-              <span class="quantidade"></span>
-              <button class="btn-mais" onclick="adicionarQuantidade(3)">+</button>
-              <button type="button" class=" btn-comprar btn btn-warning" onclick="comprar(3)">Comprar</button>
-            </div>
+          <div class="box-botao">
+            <button class="btn-menos" onclick="diminuirQuantidade(3)">-</button>
+            <span class="quantidade"></span>
+            <button class="btn-mais" onclick="adicionarQuantidade(3)">+</button>
+            <button type="button" class=" btn-comprar btn btn-warning" onclick="comprar(3)">Comprar</button>
+          </div>
 
         </li>
       </ul>
@@ -227,7 +223,7 @@
         </div>
 
 
-        <div >
+        <div>
           <h4><strong>Soda Limonada</strong></h4>
           <div class="box-botao">
             <button class="btn-menos" onclick="diminuirQuantidade(9)">-</button>
