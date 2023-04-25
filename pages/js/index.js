@@ -21,6 +21,7 @@ const alertCarrinho = document.getElementById("alert-informacao")
 const alertSucesso = document.getElementById("alert-sucesso")
 const semNum = document.getElementById("sem-numero")
 const semCep = document.getElementById("sem-cep")
+const btnCarrinho = document.getElementById("btn-carrinho")
 let inputNum = document.getElementById("numeroCasa")
 let inputCep = document.getElementById("cep")
 btnConfirmarEndereco.disabled = false
@@ -58,7 +59,7 @@ menuBebidas.addEventListener("click", () => {
 //função para adicionar itens ao box de informações finais
 function pedidoCarrinho() {
     let produtos = document.getElementsByClassName("add-produto");
-    let quantidades = document.getElementsByClassName("add-quantidade");
+    let quantidades = document.getElementsByClassName("quantidade-carrinho");
     let precos = document.getElementsByClassName("add-preco-total");
     let adicionarPedido = document.createElement("div")
     adicionarPedido.setAttribute("id", "div-pedido")
@@ -120,6 +121,12 @@ function excluir(event) {
 
     excluirLinha.remove()
 }
+
+//função para abrir o carrinho
+btnCarrinho.addEventListener("click", () => {
+    fundo.classList.remove("hide")
+    toogleClasse(carrinho)
+})
 
 //Botão "alterar pedido" abre o carrinho de compras e faz alteração do pedido no box de informação conforme informado pelo usuário 
 btnAlterarPedido.addEventListener("click", () => {
@@ -336,7 +343,7 @@ function comprar(id) {
     adicionarProduto.className = "largura-cabecalho-produto add-produto"
 
     let adicionarQuantidade = document.createElement("td")
-    adicionarQuantidade.innerHTML = quantidade[id].innerHTML
+    adicionarQuantidade.innerHTML = "<span class='maisMenos-carrinho margin-direita5' onclick='novoBtnMenos(event)'>-</span><span class='quantidade-carrinho'>" + quantidade[id].innerHTML + "</span><span class='maisMenos-carrinho margin-esquerda5' onclick='novoBtnMais(event)'>+</span>"
     adicionarQuantidade.className = "largura-cabecalho add-quantidade"
 
 
@@ -392,6 +399,57 @@ function adicionarQuantidade(id) {
     btnComprar[id].disabled = false
 }
 
+//função para aumentar quantidade no carrinho
+function novoBtnMais(event) {
+    let quantidadeCarrinho = event.target.parentNode;
+    let quantidadeCarrinhoParent = quantidadeCarrinho.parentNode
+    let pegarQuantidade = parseInt(quantidadeCarrinho.getElementsByClassName("quantidade-carrinho")[0].innerHTML);
+    let valorUnitario = parseFloat(quantidadeCarrinhoParent.getElementsByClassName("add-preco-un")[0].innerHTML.slice(3))
+    arrayTotal.push(valorUnitario)
+
+    const totalPedido = arrayTotal.reduce((total, numeroAtual) => total + numeroAtual, 0)
+    let exibirTotal = document.getElementById("total-pedido")
+    localStorage.setItem("total", totalPedido)
+
+    exibirTotal.innerHTML = "R$ " + totalPedido
+    exibirTotal.className = "total-pedido preco"
+
+    let novaQuantidade = pegarQuantidade + 1;
+    quantidadeCarrinho.getElementsByClassName("quantidade-carrinho")[0].innerHTML = novaQuantidade;
+
+    let novoValorTotal = (novaQuantidade * valorUnitario)
+    quantidadeCarrinhoParent.getElementsByClassName("add-preco-total")[0].innerHTML = "R$ " + novoValorTotal;
+}
+
+//função para diminuir quantidade no carrinho
+function novoBtnMenos(event) {
+
+    let quantidadeCarrinho = event.target.parentNode;
+    let quantidadeCarrinhoParent = quantidadeCarrinho.parentNode
+    let pegarQuantidade = parseInt(quantidadeCarrinho.getElementsByClassName("quantidade-carrinho")[0].innerHTML);
+    let valorUnitario = parseFloat(quantidadeCarrinhoParent.getElementsByClassName("add-preco-un")[0].innerHTML.slice(3))
+    arrayTotal.push(-valorUnitario)
+    if (pegarQuantidade > 0) {
+        let novaQuantidade = pegarQuantidade - 1;
+        quantidadeCarrinho.getElementsByClassName("quantidade-carrinho")[0].innerHTML = novaQuantidade;
+
+        let novoValorTotal = novaQuantidade * valorUnitario;
+        quantidadeCarrinhoParent.getElementsByClassName("add-preco-total")[0].innerHTML = "R$ " + novoValorTotal.toFixed(2);
+        if (novaQuantidade == 0) {
+            let excluir = event.target
+            let excluirLinha = excluir.parentNode.parentNode
+            excluirLinha.remove()
+        }
+    }
+
+    const totalPedido = arrayTotal.reduce((total, numeroAtual) => total + numeroAtual, 0)
+    let exibirTotal = document.getElementById("total-pedido")
+    localStorage.setItem("total", totalPedido)
+
+    exibirTotal.innerHTML = "R$ " + totalPedido
+    exibirTotal.className = "total-pedido preco"
+}
+
 //função para diminuir quantidade
 function diminuirQuantidade(id) {
     let quantidadeAtual = parseInt(quantidade[id].innerHTML)
@@ -430,13 +488,13 @@ inputCep.addEventListener("blur", () => {
     let rua = document.getElementById("rua")
     let bairro = document.getElementById("bairro")
     let cidade = document.getElementById("cidade")
- 
+
     fetch(`https://viacep.com.br/ws/${cep}/json/`)
         .then((resp) => resp.json())
         .then((data) => {
             if (data.erro) {
-                throw new Error ("CEP inválido")
-                
+                throw new Error("CEP inválido")
+
             }
             rua.value = data.logradouro;
             bairro.value = data.bairro;
@@ -448,9 +506,9 @@ inputCep.addEventListener("blur", () => {
                 icon: 'error',
                 title: 'Oops...',
                 text: 'CEP inválido',
-              })
+            })
 
-              btnConfirmarEndereco.disabled = true
+            btnConfirmarEndereco.disabled = true
         })
 })
 

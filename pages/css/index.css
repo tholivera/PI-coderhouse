@@ -25,7 +25,8 @@ h1 {
   border-radius: 10px;
 }
 
-.cardapio, .bebidas {
+.cardapio,
+.bebidas {
   position: relative;
   left: 50%;
   transform: translate(-50%);
@@ -293,20 +294,51 @@ p {
 
 .sem-numero {
   position: absolute;
-   background-color: rgba(128, 0, 128, 0.836);
-   border-radius: 5px;
-   padding: 5px;
-   color: white;
-   left: 315px;
-   top: 80px;
+  background-color: rgba(128, 0, 128, 0.836);
+  border-radius: 5px;
+  padding: 5px;
+  color: white;
+  left: 315px;
+  top: 80px;
 }
 
 .sem-cep {
   position: absolute;
-   background-color: rgba(128, 0, 128, 0.836);
-   border-radius: 5px;
-   padding: 5px 34px;
-   color: white;
-   left: 54px;
-   top: 45px;
+  background-color: rgba(128, 0, 128, 0.836);
+  border-radius: 5px;
+  padding: 5px 34px;
+  color: white;
+  left: 54px;
+  top: 45px;
+}
+
+.btn-carrinho {
+  position: absolute;
+  left: 80%;
+  display: flex;
+  cursor: pointer;
+}
+
+.img-carrinho {
+  height: 30px;
+  padding-right: 5px;
+}
+
+.maisMenos-carrinho {
+  background-color: #8080808c;
+  padding: 2px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.maisMenos-carrinho:hover {
+  background-color: grey;
+}
+
+.margin-esquerda5 {
+margin-left: 5px;
+}
+
+.margin-direita5 {
+margin-right: 5px;
 }
